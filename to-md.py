@@ -66,7 +66,7 @@ def process_post(post_id, post_date, post_title, post_subtitle):
             of.write(f'created: {post_date}\n')
             of.write(f"imported: {date.today().strftime('%Y-%m-%dT%H:%M%')}\n")
             of.write(f'tags: newsletter substack imported\n')
-            of.write('--\n')
+            of.write('---\n\n')
             of.write(f'# {post_title}\n\n')
             if post_subtitle:
                 of.write(f'**{post_subtitle}**\n\n')
