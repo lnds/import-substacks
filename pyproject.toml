@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "import-substacks"
+version = "0.1.0"
+description = ""
+authors = ["Eduardo Díaz <ediaz@dcc8090.cl>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+markdownify = "^0.13.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
