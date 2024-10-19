@@ -1,6 +1,7 @@
 import csv
 import sys
 import os
+from datetime import date
 from pathlib import Path
 from markdownify import MarkdownConverter
 import requests
@@ -47,6 +48,13 @@ def process_post(post_id, post_date, post_title, post_subtitle):
         markdown = md(text)
         o = Path(out_dir) / Path(f'{post_id}.md')
         with open(o, 'w') as of:
+            of.write('---\n')
+            of.write(f'title: {post_title}\n')
+            of.write(f'subtitle: {post_subtitle}\n')
+            of.write(f'created: {post_date}')
+            of.write(f"imported: {date.today().strftime('%Y-%m-%dT%H:%M%')}")
+            of.write(f'tags: newsletter substack imported\n')
+            of.write('--\n')
             of.write(f'# {post_title}\n\n')
             if post_subtitle:
                 of.write(f'**{post_subtitle}**\n\n')
