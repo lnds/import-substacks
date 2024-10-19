@@ -45,7 +45,7 @@ class ImageBlockConverter(MarkdownConverter):
             path = href.removeprefix(base_prefix).split('?')
             key = path[0] if len(path) > 0 else path
             if key in md_urls:
-                el['href'] = md_urls[key]
+                return f'[[{md_urls[key]}]]'
         return super().convert_a(el, text, convert_as_inline)
 
 # Create shorthand method for conversion
@@ -57,7 +57,7 @@ def process_post(post_id, post_date, post_title, post_subtitle):
     with open(p, 'r') as f:
         text = f.read()
         markdown = md(text)
-        in_url = f'{post_id}.md'
+        in_url = f'{post_title}.md'
         o = Path(out_dir) / Path(in_url)
         with open(o, 'w') as of:
             of.write('---\n')
@@ -77,8 +77,9 @@ with open(csv_filename) as f:
     reader = csv.DictReader(f)
     for row in reader:
         post_id = row['post_id']
+        post_title = row['title']
         _, k = post_id.split('.') 
-        in_url = f'{post_id}.md'
+        in_url = f'{post_title}'
         md_urls[k] = in_url
 
 # process files
