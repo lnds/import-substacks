@@ -53,6 +53,9 @@ class ImageBlockConverter(MarkdownConverter):
                 return f'[[{md_urls[key]}]]'
         return super().convert_a(el, text, convert_as_inline)
 
+    def convert_iframe(self, el, text, convert_as_inline):
+        return str(el)
+
 # Create shorthand method for conversion
 def md(html, path,  **options):
     return ImageBlockConverter(path, **options).convert(html)
