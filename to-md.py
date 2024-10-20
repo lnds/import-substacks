@@ -10,17 +10,22 @@ from urllib.parse import urlparse
 
 csv_filename = sys.argv[1] if len(sys.argv) > 1 else 'posts.csv'
 in_dir = sys.argv[2] if len(sys.argv) > 2 else 'posts'
-out_dir = sys.argv[3] if len(sys.argv) > 3 else 'md_posts'
+base_out_dir = sys.argv[3] if len(sys.argv) > 3 else 'md_posts'
 from_date = sys.argv[4] if len(sys.argv) > 4 else '2022-12-18'
 base_prefix = sys.argv[5] if len(sys.argv) > 5 else 'https://newsletter.lnds.net/p/'
+out_dir = base_out_dir
 
 md_urls = dict()
 
-if not os.path.exists(out_dir):
-    os.mkdir(out_dir)
-    os.mkdir(Path(out_dir)/Path('img'))
+if not os.path.exists(base_out_dir):
+    os.mkdir(base_out_dir)
 
 class ImageBlockConverter(MarkdownConverter):
+
+    def __init__(self, out_dir, **options):
+        self.out_dir = out_dir
+        super().__init__(**options)
+
     """
     Create a custom MarkdownConverter that adds two newlines after an image
     """
@@ -29,12 +34,12 @@ class ImageBlockConverter(MarkdownConverter):
         path = urlparse(src).path
         ext = os.path.splitext(path)[1]
         img_data = requests.get(el['src']).content
-        img_id = f'{str(uuid.uuid4())}{ext}'
-        o = Path(out_dir) / Path('img') / Path(img_id)
+        img_id = f'img_{str(uuid.uuid4())}{ext}'
+        o = Path(self.out_dir) / Path(img_id)
         with open(o, 'wb') as of:
             of.write(img_data)
-        el['src'] = f'img/{img_id}'
-        return super().convert_img(el, text, convert_as_inline) + '\n\n'
+
+        return f'![[{img_id}]]'
 
     def convert_hn(self, n, el, text, convert_as_inline):
         return f'\n\n{super().convert_hn(n, el, text, convert_as_inline)}'
@@ -49,16 +54,21 @@ class ImageBlockConverter(MarkdownConverter):
         return super().convert_a(el, text, convert_as_inline)
 
 # Create shorthand method for conversion
-def md(html, **options):
-    return ImageBlockConverter(**options).convert(html)
+def md(html, path,  **options):
+    return ImageBlockConverter(path, **options).convert(html)
 
 def process_post(post_id, post_date, post_title, post_subtitle):
+    (year, month,day) = post_date.split('-')
+    out_dir = Path(base_out_dir) / Path(year) / Path(month)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
     p = Path(in_dir) / Path(f'{post_id}.html')
     with open(p, 'r') as f:
         text = f.read()
-        markdown = md(text)
+        markdown = md(text, out_dir)
         in_url = f'{post_title}.md'
-        o = Path(out_dir) / Path(in_url)
+        o = out_dir / Path(in_url)
         with open(o, 'w') as of:
             of.write('---\n')
             of.write(f'title: {post_title}\n')
