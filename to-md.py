@@ -20,6 +20,12 @@ md_urls = dict()
 if not os.path.exists(base_out_dir):
     os.mkdir(base_out_dir)
 
+def normalize_title(title):
+    if '#' in title:
+        title = title.replace('#', '')
+    return " ".join (title.split())
+
+
 class ImageBlockConverter(MarkdownConverter):
 
     def __init__(self, out_dir, **options):
@@ -70,11 +76,11 @@ def process_post(post_id, post_date, post_title, post_subtitle):
     with open(p, 'r') as f:
         text = f.read()
         markdown = md(text, out_dir)
-        in_url = f'{post_title}.md'
+        in_url = f'{normalize_title(post_title)}.md'
         o = out_dir / Path(in_url)
         with open(o, 'w') as of:
             of.write('---\n')
-            of.write(f'title: {post_title}\n')
+            of.write(f'title: {normalize_title(post_title)}\n')
             of.write(f'subtitle: {post_subtitle}\n')
             of.write(f'created: {post_date}\n')
             of.write(f"imported: {date.today().strftime('%Y-%m-%dT%H:%M%')}\n")
@@ -92,7 +98,7 @@ with open(csv_filename) as f:
         post_id = row['post_id']
         post_title = row['title']
         _, k = post_id.split('.') 
-        in_url = f'{post_title}'
+        in_url = f'{normalize_title(post_title)}'
         md_urls[k] = in_url
 
 # process files
