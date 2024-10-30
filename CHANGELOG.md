@@ -1,3 +1,13 @@
+## 0.4.0 (2024-10-30)
+
+### Feat
+
+- **import_substack.py**: add a new script replacing to-md.py
+
+### Fix
+
+- **to-md.py**: handle correctly names with # inside
+
 ## 0.3.0 (2024-10-19)
 
 ### Feat
