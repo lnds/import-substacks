@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.13"
 markdownify = "^0.13.1"
 requests = "^2.32.3"
+click = "^8.1.7"
 
 
 
