@@ -1,3 +1,9 @@
+## 0.4.1 (2024-11-10)
+
+### Fix
+
+- **normalize_title**: this function was doing nothing
+
 ## 0.4.0 (2024-10-30)
 
 ### Feat
