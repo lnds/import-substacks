@@ -53,7 +53,7 @@ def md(html, path, base_prefix, md_urls,  **options):
 
 def normalize_title(title):
     if '#' in title:
-        title = title
+        title = title.replace('#', '')
     return " ".join(title.split())
 
 
